@@ -2,6 +2,7 @@ use bevy::{input::system::exit_on_esc_system, prelude::*};
 
 mod notes;
 mod consts;
+mod types;
 
 use notes::NotesPlugin;
 
@@ -24,7 +25,10 @@ fn main() {
 }
 
 fn setup(mut commands: Commands) {
+    let config = types::load_config();
+
     commands
         .spawn_bundle(OrthographicCameraBundle::new_2d())
-        .commands();
+        .commands()
+        .insert_resource(config);
 }
