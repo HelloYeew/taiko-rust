@@ -1,4 +1,5 @@
 use bevy::prelude::*;
+use crate::consts::*;
 
 // Keeps the textures and materials for note
 struct NoteMaterialResource {
@@ -41,7 +42,7 @@ fn spawn_notes(
         return;
     }
 
-    let transform = Transform::from_translation(Vec3::new(-400., 0., 1.));
+    let transform = Transform::from_translation(Vec3::new(SPAWN_POSITION, 0., 1.));
     commands
         .spawn_bundle(SpriteBundle {
             material: materials.don_texture.clone(),
@@ -55,7 +56,7 @@ fn spawn_notes(
 // Move the notes forward
 fn move_notes(time: Res<Time>, mut query: Query<(&mut Transform, &Note)>) {
     for (mut transform, _note) in query.iter_mut() {
-        transform.translation.x += time.delta_seconds() * 200.;
+        transform.translation.x -= time.delta_seconds() * BASE_SPEED;
     }
 }
 

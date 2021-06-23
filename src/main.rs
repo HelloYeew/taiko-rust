@@ -1,6 +1,8 @@
 use bevy::{input::system::exit_on_esc_system, prelude::*};
 
 mod notes;
+mod consts;
+
 use notes::NotesPlugin;
 
 fn main() {
