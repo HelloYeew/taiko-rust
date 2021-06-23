@@ -1,3 +1,5 @@
+mod notes;
+
 use bevy::{input::system::exit_on_esc_system, prelude::*};
 
 fn main() {
