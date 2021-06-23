@@ -1,6 +1,6 @@
 use bevy::prelude::*;
 
-/// Keeps the textures and materials for note
+// Keeps the textures and materials for note
 struct NoteMaterialResource {
     don_texture: Handle<ColorMaterial>,
     kat_texture: Handle<ColorMaterial>,
@@ -21,5 +21,54 @@ impl FromWorld for NoteMaterialResource {
             kat_texture: materials.add(kat_handle.into()),
             goal_texture: materials.add(goal_handle.into()),
         }
+    }
+}
+
+// Note component
+struct Note;
+
+// Keep track of time when to spawn a new note
+struct SpawnTimer(Timer);
+
+// Spawn notes
+fn spawn_notes(
+    mut commands: Commands,
+    materials: Res<NoteMaterialResource>,
+    time: Res<Time>,
+    mut timer: ResMut<SpawnTimer>,
+) {
+    if !timer.0.tick(time.delta()).just_finished() {
+        return;
+    }
+
+    let transform = Transform::from_translation(Vec3::new(-400., 0., 1.));
+    commands
+        .spawn_bundle(SpriteBundle {
+            material: materials.don_texture.clone(),
+            sprite: Sprite::new(Vec2::new(140., 140.)),
+            transform,
+            ..Default::default()
+        })
+        .insert(Note);
+}
+
+// Move the notes forward
+fn move_notes(time: Res<Time>, mut query: Query<(&mut Transform, &Note)>) {
+    for (mut transform, _note) in query.iter_mut() {
+        transform.translation.x += time.delta_seconds() * 200.;
+    }
+}
+
+// Notes plugin
+pub struct NotesPlugin;
+impl Plugin for NotesPlugin {
+    fn build(&self, app: &mut AppBuilder) {
+        app
+            // Initialize Resources
+            .init_resource::<NoteMaterialResource>()
+            .insert_resource(SpawnTimer(Timer::from_seconds(1.0, true)))
+            // Add systems
+            .add_system(spawn_notes.system())
+            .add_system(move_notes.system());
     }
 }

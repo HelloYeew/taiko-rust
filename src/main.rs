@@ -1,6 +1,7 @@
-mod notes;
-
 use bevy::{input::system::exit_on_esc_system, prelude::*};
+
+mod notes;
+use notes::NotesPlugin;
 
 fn main() {
     App::build()
@@ -13,14 +14,15 @@ fn main() {
             height: 600.,
             ..Default::default()
         })
-        .add_plugins(DefaultPlugins)
+        .add_startup_system(setup.system())
         .add_system(exit_on_esc_system.system())
+        .add_plugins(DefaultPlugins)
+        .add_plugin(NotesPlugin)
         .run();
 }
 
 fn setup(mut commands: Commands) {
     commands
         .spawn_bundle(OrthographicCameraBundle::new_2d())
-        .commands()
-        .spawn_bundle(UiCameraBundle::default());
+        .commands();
 }
