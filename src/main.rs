@@ -13,8 +13,8 @@ fn main() {
         // Set WindowDescriptor Resource to change title and size
         .insert_resource(WindowDescriptor {
             title: "Taikrust".to_string(),
-            width: 800.,
-            height: 600.,
+            width: 1366.,
+            height: 768.,
             ..Default::default()
         })
         .add_startup_system(setup.system())
