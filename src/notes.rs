@@ -57,13 +57,6 @@ fn spawn_notes(
         if secs_last < note.spawn_time && note.spawn_time < secs {
             remove_counter += 1;
 
-            // // Get the correct material according to speed
-            // let material = match note.speed {
-            //     Speed::Slow => materials.don_texture.clone(),
-            //     Speed::Medium => materials.don_texture.clone(),
-            //     Speed::Fast => materials.don_texture.clone(),
-            // };
-
             // Get the correct material according to speed
             let material = match note.types {
                 NoteTypes::Don => materials.don_texture.clone(),
@@ -88,7 +81,7 @@ fn spawn_notes(
         }
     }
 
-    // Remove the arrows we have spawned from the list
+    // Remove the notes we have spawned from the list
     for _ in 0..remove_counter {
         song_config.notes.remove(0);
     }
@@ -131,7 +124,7 @@ fn despawn_notes(
         }
 
         // Despawn notes after they leave the screen
-        if pos <= 2. * -TARGET_POSITION {
+        if pos <= 2. * TARGET_POSITION {
             commands.entity(entity).despawn();
         }
     }
