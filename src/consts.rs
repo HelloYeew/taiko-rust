@@ -5,7 +5,7 @@ pub const BASE_SPEED: f32 = 200.;
 pub const SPAWN_POSITION: f32 = 400.;
 
 // X coordinate value where the notes should be clicked
-pub const TARGET_POSITION: f32 = 200.;
+pub const TARGET_POSITION: f32 = -200.;
 
 // Margin of error for clicking a note
 pub const THRESHOLD: f32 = 20.;

@@ -100,9 +100,23 @@ impl Plugin for NotesPlugin {
         app
             // Initialize Resources
             .init_resource::<NoteMaterialResource>()
-            .insert_resource(SpawnTimer(Timer::from_seconds(1.0, true)))
+            .add_startup_system(setup_target_notes.system())
             // Add systems
             .add_system(spawn_notes.system())
             .add_system(move_notes.system());
     }
+}
+
+struct TargetNote;
+
+fn setup_target_notes(mut commands: Commands, materials: Res<NoteMaterialResource>) {
+    let mut transform = Transform::from_translation(Vec3::new(TARGET_POSITION, 150., 1.));
+    commands
+        .spawn_bundle(SpriteBundle {
+            material: materials.target_texture.clone(),
+            sprite: Sprite::new(Vec2::new(90., 90.)),
+            transform,
+            ..Default::default()
+        })
+        .insert(TargetNote);
 }
