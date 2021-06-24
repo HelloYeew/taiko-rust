@@ -10,5 +10,5 @@ pub const TARGET_POSITION: f32 = 200.;
 // Margin of error for clicking a note
 pub const THRESHOLD: f32 = 20.;
 
-/// Total distance traveled by a note, from spawn to goal
+/// Total distance traveled by a note, from spawn to target
 pub const DISTANCE: f32 = TARGET_POSITION - SPAWN_POSITION;

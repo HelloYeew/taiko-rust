@@ -6,7 +6,7 @@ use crate::types::*;
 struct NoteMaterialResource {
     don_texture: Handle<ColorMaterial>,
     kat_texture: Handle<ColorMaterial>,
-    goal_texture: Handle<ColorMaterial>,
+    target_texture: Handle<ColorMaterial>,
 }
 impl FromWorld for NoteMaterialResource {
     fn from_world(world: &mut World) -> Self {
@@ -17,11 +17,11 @@ impl FromWorld for NoteMaterialResource {
 
         let don_handle = asset_server.load("images/don-small.png");
         let kat_handle = asset_server.load("images/kat-small.png");
-        let goal_handle = asset_server.load("images/note-goal.png");
+        let target_handle = asset_server.load("images/note-target.png");
         NoteMaterialResource {
             don_texture: materials.add(don_handle.into()),
             kat_texture: materials.add(kat_handle.into()),
-            goal_texture: materials.add(goal_handle.into()),
+            target_texture: materials.add(target_handle.into()),
         }
     }
 }
