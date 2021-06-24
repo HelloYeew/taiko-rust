@@ -32,9 +32,6 @@ struct Note {
     types: NoteTypes,
 }
 
-// Keep track of time when to spawn a new note
-struct SpawnTimer(Timer);
-
 // Spawn notes
 fn spawn_notes(
     mut commands: Commands,
