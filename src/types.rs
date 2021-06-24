@@ -16,14 +16,6 @@ impl NoteTypes {
 
         keys.iter().any(|code| input.just_pressed(*code))
     }
-
-    /// Returns the y coordinate for a note
-    pub fn y(&self) -> f32 {
-        match self {
-            NoteTypes::Don => 150.,
-            NoteTypes::Kat => 150.,
-        }
-    }
 }
 
 #[derive(Copy, Clone, Debug)]
@@ -52,6 +44,7 @@ impl Speed {
 pub struct NoteTime {
     pub spawn_time: f64,
     pub speed: Speed,
+    pub types: NoteTypes,
 }
 
 #[derive(Debug)]
@@ -60,11 +53,12 @@ pub struct SongConfig {
 }
 
 impl NoteTime {
-    fn new(click_time: f64, speed: Speed) -> Self {
+    fn new(click_time: f64, speed: Speed, types: NoteTypes) -> Self {
         let speed_value = speed.value();
         Self {
             spawn_time: click_time - (DISTANCE / speed_value) as f64,
-            speed
+            speed,
+            types,
         }
     }
 }
@@ -72,11 +66,11 @@ impl NoteTime {
 pub fn load_config() -> SongConfig {
     SongConfig {
         notes: vec![
-            NoteTime::new(1., Speed::Slow),
-            NoteTime::new(2., Speed::Slow),
-            NoteTime::new(3., Speed::Slow),
-            NoteTime::new(4., Speed::Medium),
-            NoteTime::new(5., Speed::Fast),
+            NoteTime::new(1., Speed::Slow, NoteTypes::Don),
+            NoteTime::new(2., Speed::Slow, NoteTypes::Don),
+            NoteTime::new(3., Speed::Slow, NoteTypes::Don),
+            NoteTime::new(4., Speed::Medium, NoteTypes::Kat),
+            NoteTime::new(5., Speed::Fast, NoteTypes::Kat),
         ],
     }
 }

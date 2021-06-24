@@ -29,6 +29,7 @@ impl FromWorld for NoteMaterialResource {
 // Note component
 struct Note {
     speed: Speed,
+    types: NoteTypes,
 }
 
 // Keep track of time when to spawn a new note
@@ -56,14 +57,20 @@ fn spawn_notes(
         if secs_last < note.spawn_time && note.spawn_time < secs {
             remove_counter += 1;
 
+            // // Get the correct material according to speed
+            // let material = match note.speed {
+            //     Speed::Slow => materials.don_texture.clone(),
+            //     Speed::Medium => materials.don_texture.clone(),
+            //     Speed::Fast => materials.don_texture.clone(),
+            // };
+
             // Get the correct material according to speed
-            let material = match note.speed {
-                Speed::Slow => materials.don_texture.clone(),
-                Speed::Medium => materials.don_texture.clone(),
-                Speed::Fast => materials.don_texture.clone(),
+            let material = match note.types {
+                NoteTypes::Don => materials.don_texture.clone(),
+                NoteTypes::Kat =>  materials.kat_texture.clone(),
             };
 
-            let mut transform = Transform::from_translation(Vec3::new(SPAWN_POSITION, 150., 1.));
+            let transform = Transform::from_translation(Vec3::new(SPAWN_POSITION, 150., 1.));
 
             commands
                 .spawn_bundle(SpriteBundle {
@@ -74,6 +81,7 @@ fn spawn_notes(
                 })
                 .insert(Note {
                     speed: note.speed,
+                    types: note.types,
                 });
         } else {
             break;
@@ -93,6 +101,42 @@ fn move_notes(time: Res<Time>, mut query: Query<(&mut Transform, &Note)>) {
     }
 }
 
+struct TargetNote;
+
+fn setup_target_notes(mut commands: Commands, materials: Res<NoteMaterialResource>) {
+    let transform = Transform::from_translation(Vec3::new(TARGET_POSITION, 150., 1.));
+    commands
+        .spawn_bundle(SpriteBundle {
+            material: materials.target_texture.clone(),
+            sprite: Sprite::new(Vec2::new(90., 90.)),
+            transform,
+            ..Default::default()
+        })
+        .insert(TargetNote);
+}
+
+fn despawn_notes(
+    mut commands: Commands,
+    query: Query<(Entity, &Transform, &Note)>,
+    keyboard_input: Res<Input<KeyCode>>,
+) {
+    for (entity, transform, note) in query.iter() {
+        let pos = transform.translation.x;
+
+        // Check if note is inside clicking threshold
+        if (TARGET_POSITION - THRESHOLD..=TARGET_POSITION + THRESHOLD).contains(&pos)
+            && note.types.key_just_pressed(&keyboard_input)
+        {
+            commands.entity(entity).despawn();
+        }
+
+        // Despawn notes after they leave the screen
+        if pos <= 2. * -TARGET_POSITION {
+            commands.entity(entity).despawn();
+        }
+    }
+}
+
 // Notes plugin
 pub struct NotesPlugin;
 impl Plugin for NotesPlugin {
@@ -103,20 +147,7 @@ impl Plugin for NotesPlugin {
             .add_startup_system(setup_target_notes.system())
             // Add systems
             .add_system(spawn_notes.system())
-            .add_system(move_notes.system());
+            .add_system(move_notes.system())
+            .add_system(despawn_notes.system());
     }
-}
-
-struct TargetNote;
-
-fn setup_target_notes(mut commands: Commands, materials: Res<NoteMaterialResource>) {
-    let mut transform = Transform::from_translation(Vec3::new(TARGET_POSITION, 150., 1.));
-    commands
-        .spawn_bundle(SpriteBundle {
-            material: materials.target_texture.clone(),
-            sprite: Sprite::new(Vec2::new(90., 90.)),
-            transform,
-            ..Default::default()
-        })
-        .insert(TargetNote);
 }
