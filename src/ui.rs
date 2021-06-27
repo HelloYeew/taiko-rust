@@ -1,6 +1,5 @@
 use bevy::prelude::*;
 use crate::consts::*;
-use crate::types::*;
 
 // Texture for UI (lanes, drum, background etc.)
 struct UIMaterialResource {
@@ -36,12 +35,12 @@ fn setup_lane(mut commands: Commands, materials: Res<UIMaterialResource>) {
 }
 
 // Setup time UI
-fn setup_time_ui(
-    commands: &mut Commands,
+fn setup_ui(
+    mut commands: Commands,
     asset_server: ResMut<AssetServer>,
     mut color_materials: ResMut<Assets<ColorMaterial>>,
 ) {
-    let font = asset_server.load("fonts/DFPKanTeiRyu-XB.ttf");
+    let font: Handle<Font> = asset_server.load("fonts/DFPKanTeiRyu-XB.ttf");
     let material = color_materials.add(Color::NONE.into());
 
     commands
@@ -79,12 +78,30 @@ fn setup_time_ui(
 
 struct TimeText;
 
+fn update_time_text(time: Res<Time>, mut query: Query<(&mut Text, &TimeText)>) {
+    // Song must start 3 seconds after real time
+    let secs = time.seconds_since_startup() - 3.;
+
+    // Don't do anything before the song starts
+    if secs < 0. {
+        return;
+    }
+
+    for (mut text, _marker) in query.iter_mut() {
+        text.sections[0].value = format!("Time: {:.2}", secs);
+    }
+}
+
+struct ScoreText;
+
 // UI plugin
 pub struct UIPlugin;
 impl Plugin for UIPlugin {
     fn build(&self, app: &mut AppBuilder) {
         app
             .init_resource::<UIMaterialResource>()
-            .add_startup_system(setup_lane.system());
+            .add_startup_system(setup_lane.system())
+            .add_startup_system(setup_ui.system())
+            .add_system(update_time_text.system());
     }
 }
