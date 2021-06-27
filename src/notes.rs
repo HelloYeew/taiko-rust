@@ -60,7 +60,7 @@ fn spawn_notes(
                 NoteTypes::Kat =>  materials.kat_texture.clone(),
             };
 
-            let transform = Transform::from_translation(Vec3::new(SPAWN_POSITION, 150., 1.));
+            let transform = Transform::from_translation(Vec3::new(SPAWN_POSITION, 120., 1.));
 
             commands
                 .spawn_bundle(SpriteBundle {
@@ -94,7 +94,7 @@ fn move_notes(time: Res<Time>, mut query: Query<(&mut Transform, &Note)>) {
 struct TargetNote;
 
 fn setup_target_notes(mut commands: Commands, materials: Res<NoteMaterialResource>) {
-    let transform = Transform::from_translation(Vec3::new(TARGET_POSITION, 150., 1.));
+    let transform = Transform::from_translation(Vec3::new(TARGET_POSITION, 120., 1.));
     commands
         .spawn_bundle(SpriteBundle {
             material: materials.target_texture.clone(),
