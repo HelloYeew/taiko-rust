@@ -54,7 +54,7 @@ fn spawn_notes(
         if secs_last < note.spawn_time && note.spawn_time < secs {
             remove_counter += 1;
 
-            // Get the correct material according to speed
+            // Get the correct material according to note types
             let material = match note.types {
                 NoteTypes::Don => materials.don_texture.clone(),
                 NoteTypes::Kat =>  materials.kat_texture.clone(),
