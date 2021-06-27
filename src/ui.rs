@@ -19,3 +19,28 @@ impl FromWorld for UIMaterialResource {
         }
     }
 }
+
+// Spawn Lane
+struct Lanes;
+
+fn setup_lane(mut commands: Commands, materials: Res<UIMaterialResource>) {
+    let transform = Transform::from_translation(Vec3::new(0.,LANE_Y_AXIS, 1.));
+    commands
+        .spawn_bundle(SpriteBundle {
+            material: materials.lane_texture.clone(),
+            sprite: Sprite::new(Vec2::new(1366., 200.)),
+            transform,
+            ..Default::default()
+        })
+        .insert(Lanes);
+}
+
+// UI plugin
+pub struct UIPlugin;
+impl Plugin for UIPlugin {
+    fn build(&self, app: &mut AppBuilder) {
+        app
+            .init_resource::<UIMaterialResource>()
+            .add_startup_system(setup_lane.system());
+    }
+}

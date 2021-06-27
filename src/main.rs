@@ -6,6 +6,7 @@ mod types;
 mod ui;
 
 use notes::NotesPlugin;
+use ui::UIPlugin;
 
 fn main() {
     App::build()
@@ -22,6 +23,7 @@ fn main() {
         .add_system(exit_on_esc_system.system())
         .add_plugins(DefaultPlugins)
         .add_plugin(NotesPlugin)
+        .add_plugin(UIPlugin)
         .run();
 }
 

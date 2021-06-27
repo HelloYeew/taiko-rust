@@ -12,3 +12,6 @@ pub const THRESHOLD: f32 = 20.;
 
 /// Total distance traveled by a note, from spawn to target
 pub const DISTANCE: f32 = TARGET_POSITION - SPAWN_POSITION;
+
+// Y Axis of lanes
+pub const LANE_Y_AXIS: f32 = 100.;
