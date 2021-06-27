@@ -73,6 +73,36 @@ fn setup_ui(
                     ..Default::default()
                 })
                 .insert(TimeText);
+        })
+        .commands()
+        .spawn_bundle(NodeBundle {
+            style: Style {
+                position_type: PositionType::Absolute,
+                position: Rect {
+                    left: Val::Px(10.),
+                    bottom: Val::Px(10.),
+                    ..Default::default()
+                },
+                ..Default::default()
+            },
+            material,
+            ..Default::default()
+        })
+        .with_children(|parent| {
+            parent
+                .spawn_bundle(TextBundle {
+                    text: Text::with_section(
+                        "Score: 0. Corrects: 0. Fails: 0",
+                        TextStyle {
+                            font_size: 40.0,
+                            font: font.clone(),
+                            color: Color::rgb(0.9, 0.9, 0.9),
+                        },
+                        Default::default(),
+                    ),
+                    ..Default::default()
+                })
+                .insert(ScoreText);
         });
 }
 
