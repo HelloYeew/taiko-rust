@@ -35,6 +35,50 @@ fn setup_lane(mut commands: Commands, materials: Res<UIMaterialResource>) {
         .insert(Lanes);
 }
 
+// Setup time UI
+fn setup_time_ui(
+    commands: &mut Commands,
+    asset_server: ResMut<AssetServer>,
+    mut color_materials: ResMut<Assets<ColorMaterial>>,
+) {
+    let font = asset_server.load("fonts/DFPKanTeiRyu-XB.ttf");
+    let material = color_materials.add(Color::NONE.into());
+
+    commands
+        // Time text node
+        .spawn_bundle(NodeBundle {
+            style: Style {
+                position_type: PositionType::Absolute,
+                position: Rect {
+                    left: Val::Px(10.),
+                    top: Val::Px(10.),
+                    ..Default::default()
+                },
+                ..Default::default()
+            },
+            material: material.clone(),
+            ..Default::default()
+        })
+        .with_children(|parent| {
+            parent
+                .spawn_bundle(TextBundle {
+                    text: Text::with_section(
+                        "Time: 0.0",
+                        TextStyle {
+                            font_size: 40.0,
+                            font: font.clone(),
+                            color: Color::rgb(0.9, 0.9, 0.9),
+                        },
+                        Default::default(),
+                    ),
+                    ..Default::default()
+                })
+                .insert(TimeText);
+        });
+}
+
+struct TimeText;
+
 // UI plugin
 pub struct UIPlugin;
 impl Plugin for UIPlugin {
