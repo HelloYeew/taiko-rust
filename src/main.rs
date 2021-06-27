@@ -3,6 +3,7 @@ use bevy::{input::system::exit_on_esc_system, prelude::*};
 mod notes;
 mod consts;
 mod types;
+mod ui;
 
 use notes::NotesPlugin;
 
