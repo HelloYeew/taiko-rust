@@ -5,8 +5,7 @@ A try to create Taiko no Tatsujin as a community game (?) with Rust by bevy engi
 ## Development Status
 
 This project is just start so it's current in a heavy WIP. I will share design on Adobe XD and program flow that I write
-and plan soon. If you interest in this project and you want to know the plan on development you can DMs me in my discord (HelloYeew#2740)
-or email me (my email is on my GitHub profile).
+and plan soon. If you interest in this project and you want to know the plan on development you can see [development plan](https://github.com/HelloYeew/taiko-rust/projects/1). If you have any concern or you want to contribute but have any question you can DMs me in Discord (HelloYeew#2740) or email me (me@helloyeew.dev)
 
 I always write a blog on progress about this project on [project blog](https://taiko-rust-blog.helloyeew.dev/), you can read it if you want to know current progress.
 
