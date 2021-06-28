@@ -20,6 +20,7 @@ fn main() {
             title: "Taikrust".to_string(),
             width: 1366.,
             height: 768.,
+            resizable: false, // Will remove this after we find the way how to make sprite scale with screen.
             ..Default::default()
         })
         .init_resource::<ScoreResource>()
