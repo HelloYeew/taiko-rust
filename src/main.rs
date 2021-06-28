@@ -1,13 +1,15 @@
+mod gameplay;
+mod consts;
+mod types;
+mod ui;
+mod score;
+
 use bevy::{input::system::exit_on_esc_system,
            prelude::*,
            diagnostic::{FrameTimeDiagnosticsPlugin, LogDiagnosticsPlugin}};
 use gameplay::NotesPlugin;
 use ui::UIPlugin;
-
-mod gameplay;
-mod consts;
-mod types;
-mod ui;
+use score::ScoreResource;
 
 fn main() {
     App::build()
@@ -20,11 +22,13 @@ fn main() {
             height: 768.,
             ..Default::default()
         })
+        .init_resource::<ScoreResource>()
         .add_startup_system(setup.system())
         .add_system(exit_on_esc_system.system())
         .add_plugins(DefaultPlugins)
         .add_plugin(NotesPlugin)
         .add_plugin(UIPlugin)
+        // FPS print on console
         .add_plugin(LogDiagnosticsPlugin::default())
         .add_plugin(FrameTimeDiagnosticsPlugin::default())
         .run();
