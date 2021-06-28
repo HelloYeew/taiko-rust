@@ -1,11 +1,11 @@
 use bevy::{input::system::exit_on_esc_system, prelude::*};
 
-mod notes;
+mod gameplay;
 mod consts;
 mod types;
 mod ui;
 
-use notes::NotesPlugin;
+use gameplay::NotesPlugin;
 use ui::UIPlugin;
 
 fn main() {

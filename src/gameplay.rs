@@ -26,6 +26,40 @@ impl FromWorld for NoteMaterialResource {
     }
 }
 
+// Texture for lanes
+pub struct LaneMaterialResource {
+    lane_texture: Handle<ColorMaterial>,
+}
+impl FromWorld for LaneMaterialResource {
+    fn from_world(world: &mut World) -> Self {
+        let world = world.cell();
+
+        let mut materials = world.get_resource_mut::<Assets<ColorMaterial>>().unwrap();
+        let asset_server = world.get_resource::<AssetServer>().unwrap();
+
+        let lane_handle = asset_server.load("images/note-lane.png");
+        LaneMaterialResource {
+            lane_texture: materials.add(lane_handle.into()),
+        }
+    }
+}
+
+// Spawn Lane
+struct Lanes;
+
+fn setup_lane(mut commands: Commands, materials: Res<LaneMaterialResource>) {
+    let transform = Transform::from_translation(Vec3::new(0.,LANE_Y_AXIS, 1.));
+    commands
+        .spawn_bundle(SpriteBundle {
+            material: materials.lane_texture.clone(),
+            sprite: Sprite::new(Vec2::new(1366., 200.)),
+            transform,
+            ..Default::default()
+        })
+        .insert(Lanes);
+}
+
+
 // Note component
 struct Note {
     speed: Speed,
@@ -134,7 +168,9 @@ impl Plugin for NotesPlugin {
         app
             // Initialize Resources
             .init_resource::<NoteMaterialResource>()
-            .add_startup_system(setup_target_notes.system())
+            .init_resource::<LaneMaterialResource>()
+            .add_system(setup_target_notes.system().after("lane"))
+            .add_system(setup_lane.system().label("lane"))
             // Add systems
             .add_system(spawn_notes.system())
             .add_system(move_notes.system())
