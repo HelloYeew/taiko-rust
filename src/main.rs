@@ -1,12 +1,13 @@
-use bevy::{input::system::exit_on_esc_system, prelude::*};
+use bevy::{input::system::exit_on_esc_system,
+           prelude::*,
+           diagnostic::{FrameTimeDiagnosticsPlugin, LogDiagnosticsPlugin}};
+use gameplay::NotesPlugin;
+use ui::UIPlugin;
 
 mod gameplay;
 mod consts;
 mod types;
 mod ui;
-
-use gameplay::NotesPlugin;
-use ui::UIPlugin;
 
 fn main() {
     App::build()
@@ -24,6 +25,8 @@ fn main() {
         .add_plugins(DefaultPlugins)
         .add_plugin(NotesPlugin)
         .add_plugin(UIPlugin)
+        .add_plugin(LogDiagnosticsPlugin::default())
+        .add_plugin(FrameTimeDiagnosticsPlugin::default())
         .run();
 }
 
