@@ -1,6 +1,7 @@
 use bevy::prelude::*;
 use crate::consts::*;
 use crate::types::*;
+use crate::ScoreResource;
 
 // Keeps the textures and materials for note
 struct NoteMaterialResource {
@@ -143,6 +144,8 @@ fn despawn_notes(
     mut commands: Commands,
     query: Query<(Entity, &Transform, &Note)>,
     keyboard_input: Res<Input<KeyCode>>,
+
+    mut score: ResMut<ScoreResource>,
 ) {
     for (entity, transform, note) in query.iter() {
         let pos = transform.translation.x;
@@ -152,11 +155,17 @@ fn despawn_notes(
             && note.types.key_just_pressed(&keyboard_input)
         {
             commands.entity(entity).despawn();
+
+            // Add score and correct note on score UI
+            let _points = score.increase_correct(TARGET_POSITION - pos);
         }
 
         // Despawn notes after they leave the screen
         if pos <= 2. * TARGET_POSITION {
             commands.entity(entity).despawn();
+
+            // Add fail note on score UI
+            score.increase_fails();
         }
     }
 }
