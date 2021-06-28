@@ -165,6 +165,7 @@ fn despawn_notes(
             commands.entity(entity).despawn();
 
             // Add fail note on score UI
+            // TODO: Make fail score change on pass goal, not on destroy entity
             score.increase_fails();
         }
     }

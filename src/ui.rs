@@ -1,6 +1,8 @@
 use bevy::prelude::*;
 use crate::ScoreResource;
 
+// TODO: Add FPS
+
 // Setup time UI
 fn setup_ui(
     mut commands: Commands,
@@ -91,10 +93,6 @@ fn update_time_text(time: Res<Time>, mut query: Query<(&mut Text, &TimeText)>) {
 
 struct ScoreText;
 fn update_score_text(score: Res<ScoreResource>, mut query: Query<(&mut Text, &ScoreText)>) {
-    if !score.is_changed() {
-        return;
-    }
-
     for (mut text, _marker) in query.iter_mut() {
         text.sections[0].value = format!(
             "Score: {}. Corrects: {}. Fails: {}",
@@ -111,6 +109,7 @@ impl Plugin for UIPlugin {
     fn build(&self, app: &mut AppBuilder) {
         app
             .add_startup_system(setup_ui.system())
-            .add_system(update_time_text.system());
+            .add_system(update_time_text.system())
+            .add_system(update_score_text.system());
     }
 }
