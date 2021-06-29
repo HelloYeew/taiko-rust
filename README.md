@@ -34,26 +34,37 @@ To update the source code to the latest commit, run the following command inside
 git pull
 ```
 
-### Enable fast compiles
+### Enable fast compiles (recommend)
 
 To make the development process doesn't become tedious I recommend you to enable fast compiles that is required:
 
-1.LLD Linker: The normal linker is a bit slow, so we can swap it out for the LLD Linker to get a speedup:
+1.LLD linker: The Rust compiler spends a lot of time in the "link" step. LLD is much faster at linking than the default Rust linker. To install LLD, find your OS below and run the given command:
 
-- Ubuntu : `sudo apt-get install lld`
-- Arch: `sudo pacman -S lld`
-- Windows: `cargo install -f cargo-binutils and rustup component add llvm-tools-preview`
-- MacOS: `brew install michaeleisel/zld/zld`
+- Ubuntu: sudo apt-get install lld
+- Arch: sudo pacman -S lld
+- Windows: Ensure you have the latest [cargo-binutils](https://github.com/rust-embedded/cargo-binutils)
 
-2. Enable nightly Rust for this project
+```shell
+cargo install -f cargo-binutils
+rustup component add llvm-tools-preview
+```
+- MacOS: Modern LLD does not yet support MacOS, but we can use zld instead:
+
+```shell
+brew install michaeleisel/zld/zld
+```
+
+2. Nightly Rust Compiler: This gives access to the latest performance improvements and "unstable" optimizations
 
 ```shell
 # Run this in project directory
-# Install nightly
+# Install nightly rust compiler
 rustup toolchain install nightly
-# Enable nightly on the project
-rustup override set nightly
 ```
+
+3. Generic Sharing: Allows crates to share monomorphized generic code instead of duplicating it. In some cases this allows us to "precompile" generic code so it doesn't affect iterative compiles. This is only available on nightly Rust.
+
+More info you can see [bevy engine project setup](https://bevyengine.org/learn/book/getting-started/setup/).
 
 ### Run and Build
 
