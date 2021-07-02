@@ -2,7 +2,7 @@
 pub const BASE_SPEED: f32 = 200.;
 
 // X coordinate value at which notes spawn, should be out of screen
-pub const SPAWN_POSITION: f32 = 400.;
+pub const SPAWN_POSITION: f32 = 500.;
 
 // X coordinate value where the notes should be clicked
 pub const TARGET_POSITION: f32 = -200.;
