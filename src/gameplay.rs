@@ -110,7 +110,7 @@ fn spawn_notes(
             // Get the correct material according to note types
             let material = match note.types {
                 NoteTypes::Don => materials.don_texture.clone(),
-                NoteTypes::Kat =>  materials.kat_texture.clone(),
+                NoteTypes::Kat => materials.kat_texture.clone(),
             };
 
             let transform = Transform::from_translation(Vec3::new(SPAWN_POSITION, 120., 1.));
@@ -180,11 +180,10 @@ fn despawn_notes(
         }
 
         // Despawn notes after they leave the screen
-        if pos <= 2. * TARGET_POSITION {
+        if pos <= 1.5 * TARGET_POSITION {
             commands.entity(entity).despawn();
 
             // Add fail note on score UI
-            // TODO: Make fail score change on pass goal, not on destroy entity
             score.increase_fails();
         }
     }
@@ -199,8 +198,8 @@ impl Plugin for NotesPlugin {
             .init_resource::<NoteMaterialResource>()
             .init_resource::<LaneMaterialResource>()
             .add_system(setup_target_notes.system().after("lane"))
-            .add_system(setup_lane.system().label("lane"))
-            .add_system(setup_front_lane.system().label("front_lane").after("lane"))
+            // .add_system(setup_lane.system().label("lane"))
+            .add_system(setup_front_lane.system().label("lane"))
             // Add systems
             .add_system(spawn_notes.system())
             .add_system(move_notes.system())
