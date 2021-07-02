@@ -197,9 +197,9 @@ impl Plugin for NotesPlugin {
             // Initialize Resources
             .init_resource::<NoteMaterialResource>()
             .init_resource::<LaneMaterialResource>()
-            .add_system(setup_target_notes.system().after("lane"))
-            // .add_system(setup_lane.system().label("lane"))
-            .add_system(setup_front_lane.system().label("lane"))
+            .add_system(setup_target_notes.system().after("front_lane"))
+            .add_system(setup_lane.system().label("lane"))
+            .add_system(setup_front_lane.system().label("front_lane").after("lane"))
             // Add systems
             .add_system(spawn_notes.system())
             .add_system(move_notes.system())
