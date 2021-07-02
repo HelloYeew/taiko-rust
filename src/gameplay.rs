@@ -1,4 +1,7 @@
-use bevy::prelude::*;
+use bevy::{
+    prelude::*,
+    log::LogPlugin,
+};
 use crate::consts::*;
 use crate::types::*;
 use crate::ScoreResource;
@@ -30,6 +33,7 @@ impl FromWorld for NoteMaterialResource {
 // Texture for lanes
 pub struct LaneMaterialResource {
     lane_texture: Handle<ColorMaterial>,
+    front_lane_texture: Handle<ColorMaterial>,
 }
 impl FromWorld for LaneMaterialResource {
     fn from_world(world: &mut World) -> Self {
@@ -39,8 +43,10 @@ impl FromWorld for LaneMaterialResource {
         let asset_server = world.get_resource::<AssetServer>().unwrap();
 
         let lane_handle = asset_server.load("images/note-lane.png");
+        let front_lane_handle = asset_server.load("images/note-lane-front.png");
         LaneMaterialResource {
             lane_texture: materials.add(lane_handle.into()),
+            front_lane_texture: materials.add(front_lane_handle.into()),
         }
     }
 }
@@ -53,6 +59,18 @@ fn setup_lane(mut commands: Commands, materials: Res<LaneMaterialResource>) {
     commands
         .spawn_bundle(SpriteBundle {
             material: materials.lane_texture.clone(),
+            sprite: Sprite::new(Vec2::new(1366., 200.)),
+            transform,
+            ..Default::default()
+        })
+        .insert(Lanes);
+}
+
+fn setup_front_lane(mut commands: Commands, materials: Res<LaneMaterialResource>) {
+    let transform = Transform::from_translation(Vec3::new(0.,LANE_Y_AXIS, 2.));
+    commands
+        .spawn_bundle(SpriteBundle {
+            material: materials.front_lane_texture.clone(),
             sprite: Sprite::new(Vec2::new(1366., 200.)),
             transform,
             ..Default::default()
@@ -92,7 +110,7 @@ fn spawn_notes(
             // Get the correct material according to note types
             let material = match note.types {
                 NoteTypes::Don => materials.don_texture.clone(),
-                NoteTypes::Kat =>  materials.kat_texture.clone(),
+                NoteTypes::Kat => materials.kat_texture.clone(),
             };
 
             let transform = Transform::from_translation(Vec3::new(SPAWN_POSITION, 120., 1.));
@@ -108,6 +126,7 @@ fn spawn_notes(
                     speed: note.speed,
                     types: note.types,
                 });
+            debug!("Note spawned");
         } else {
             break;
         }
@@ -161,11 +180,10 @@ fn despawn_notes(
         }
 
         // Despawn notes after they leave the screen
-        if pos <= 2. * TARGET_POSITION {
+        if pos <= 1.5 * TARGET_POSITION {
             commands.entity(entity).despawn();
 
             // Add fail note on score UI
-            // TODO: Make fail score change on pass goal, not on destroy entity
             score.increase_fails();
         }
     }
@@ -179,8 +197,9 @@ impl Plugin for NotesPlugin {
             // Initialize Resources
             .init_resource::<NoteMaterialResource>()
             .init_resource::<LaneMaterialResource>()
-            .add_system(setup_target_notes.system().after("lane"))
+            .add_system(setup_target_notes.system().after("front_lane"))
             .add_system(setup_lane.system().label("lane"))
+            .add_system(setup_front_lane.system().label("front_lane").after("lane"))
             // Add systems
             .add_system(spawn_notes.system())
             .add_system(move_notes.system())
