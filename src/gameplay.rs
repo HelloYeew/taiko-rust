@@ -1,4 +1,7 @@
-use bevy::prelude::*;
+use bevy::{
+    prelude::*,
+    log::LogPlugin,
+};
 use crate::consts::*;
 use crate::types::*;
 use crate::ScoreResource;
@@ -30,6 +33,7 @@ impl FromWorld for NoteMaterialResource {
 // Texture for lanes
 pub struct LaneMaterialResource {
     lane_texture: Handle<ColorMaterial>,
+    front_lane_texture: Handle<ColorMaterial>,
 }
 impl FromWorld for LaneMaterialResource {
     fn from_world(world: &mut World) -> Self {
@@ -39,8 +43,10 @@ impl FromWorld for LaneMaterialResource {
         let asset_server = world.get_resource::<AssetServer>().unwrap();
 
         let lane_handle = asset_server.load("images/note-lane.png");
+        let front_lane_handle = asset_server.load("images/note-lane-front.png");
         LaneMaterialResource {
             lane_texture: materials.add(lane_handle.into()),
+            front_lane_texture: materials.add(front_lane_handle.into()),
         }
     }
 }
@@ -53,6 +59,18 @@ fn setup_lane(mut commands: Commands, materials: Res<LaneMaterialResource>) {
     commands
         .spawn_bundle(SpriteBundle {
             material: materials.lane_texture.clone(),
+            sprite: Sprite::new(Vec2::new(1366., 200.)),
+            transform,
+            ..Default::default()
+        })
+        .insert(Lanes);
+}
+
+fn setup_front_lane(mut commands: Commands, materials: Res<LaneMaterialResource>) {
+    let transform = Transform::from_translation(Vec3::new(0.,LANE_Y_AXIS, 2.));
+    commands
+        .spawn_bundle(SpriteBundle {
+            material: materials.front_lane_texture.clone(),
             sprite: Sprite::new(Vec2::new(1366., 200.)),
             transform,
             ..Default::default()
@@ -108,6 +126,7 @@ fn spawn_notes(
                     speed: note.speed,
                     types: note.types,
                 });
+            debug!("Note spawned");
         } else {
             break;
         }
@@ -181,6 +200,7 @@ impl Plugin for NotesPlugin {
             .init_resource::<LaneMaterialResource>()
             .add_system(setup_target_notes.system().after("lane"))
             .add_system(setup_lane.system().label("lane"))
+            .add_system(setup_front_lane.system().label("front_lane").after("lane"))
             // Add systems
             .add_system(spawn_notes.system())
             .add_system(move_notes.system())
